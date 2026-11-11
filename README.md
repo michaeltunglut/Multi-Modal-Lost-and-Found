@@ -15,6 +15,10 @@ uvicorn main:app --reload
 
 The FastAPI backend serves the report form at <http://127.0.0.1:8000> and the standalone reports page at <http://127.0.0.1:8000/reports>. The SQLite database and uploaded images are created in `data/`. Set `PORT`, `HOST`, or `LOST_FOUND_DATA` to change the server address or storage directory. Stop the server with Ctrl+C.
 
+## Email notifications
+
+The app queues an email when a found report meets the existing match cutoff for a lost report, and when an accepted sighting is submitted. Email delivery uses SMTP and does not block report submission. For actual delivery with Mailtrap Email Sending, use `live.smtp.mailtrap.io`, port `587`, username `api`, the Email Sending SMTP token, and a From address at a verified sending domain. Mailtrap Sandbox credentials only capture test emails and do not deliver to owners' inboxes. For standard SMTP with STARTTLS, leave `SMTP_STARTTLS=1`; for implicit TLS set `SMTP_USE_SSL=1` and `SMTP_STARTTLS=0`. Set `PUBLIC_BASE_URL` to the app's externally reachable base URL so notification links work outside localhost. The app loads `.env` at startup. Until SMTP is configured, notifications remain in the SQLite outbox as pending; pending messages are retried at app startup. Match scores are suggestions, not proof of ownership.
+
 ## Use
 
 1. Submit one LOST report with a photo, category, title, description, and any optional attributes.
@@ -44,6 +48,8 @@ These are deterministic baseline features, not learned or pretrained AI embeddin
 - `PATCH /api/matches/{id}` — set `REVIEWED`, `REJECTED`, or `RESOLVED`
 - `DELETE /api/reports/{id}` — admin-only report deletion
 - `GET /uploads/{filename}` — access-controlled report or sighting image
+
+Email notification delivery state and pending messages are kept in the local `email_notifications` SQLite table.
 
 ## Data and privacy
 

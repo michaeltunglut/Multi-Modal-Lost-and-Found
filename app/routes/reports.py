@@ -1,13 +1,16 @@
 import json
+import logging
 import re
 import uuid
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 from ..config import ALLOWED, CATEGORIES, DB_PATH, MATCH_MIN_SCORE, MAX_UPLOAD, UPLOAD_DIR
 from ..database import db, now
+from ..email_notifications import notify_match_owner
 from ..features import candidate_matches, extract_image_features, report_dict
 from ..security import admin_user, optional_user, signed_in_user
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.get("/api/reports")
 def list_reports(report_type: str | None = Query(default=None, alias="type"), user=Depends(optional_user)):
@@ -80,6 +83,7 @@ def get_upload(filename: str, user=Depends(optional_user)):
 
 @router.post("/api/reports", status_code=201)
 async def create_report(
+    background_tasks: BackgroundTasks,
     report_type: str = Form(...), title: str = Form(...), description: str = Form(...), category: str = Form(...),
     image: UploadFile = File(...), colour: str = Form(default=""), brand: str = Form(default=""), contact_method: str = Form(default=""),
     location: str = Form(default=""), event_date: str = Form(default=""), user=Depends(optional_user),
@@ -123,7 +127,15 @@ async def create_report(
                 lost_id = report_id if kind == "LOST" else match["report"]["id"]
                 found_id = match["report"]["id"] if kind == "LOST" else report_id
                 c.execute("INSERT OR IGNORE INTO matches(lost_report_id,found_report_id,image_score,text_score,category_score,final_score,created_at) VALUES(?,?,?,?,?,?,?)", (lost_id,found_id,match["image_score"],match["text_score"],match["category_score"],match["final_score"],created))
-        private_matches = candidate_matches(report_id) if kind == "LOST" else []
+        matching_reports = candidate_matches(report_id)
+        for match in matching_reports:
+            lost_id = report_id if kind == "LOST" else match["report"]["id"]
+            found_id = match["report"]["id"] if kind == "LOST" else report_id
+            try:
+                notify_match_owner(lost_id, found_id, match["final_score"], background_tasks)
+            except Exception:
+                logger.exception("Could not queue match email for lost report %s", lost_id)
+        private_matches = matching_reports if kind == "LOST" else []
         return {"report":{"id":report_id,"report_type":kind},"matches":private_matches}
     except Exception:
         if report_id is None: (UPLOAD_DIR / safe_name).unlink(missing_ok=True)

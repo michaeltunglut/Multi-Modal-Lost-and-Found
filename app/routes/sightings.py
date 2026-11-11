@@ -1,19 +1,23 @@
 import json
+import logging
 import re
 import uuid
 from datetime import datetime, timedelta, timezone
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
 from ..config import ALLOWED, MATCH_MIN_SCORE, MAX_UPLOAD, UPLOAD_DIR
 from ..database import db, now
+from ..email_notifications import notify_sighting_owner
 from ..features import cosine_text, extract_image_features, image_similarity
 from ..security import optional_user, signed_in_user
 from pydantic import BaseModel
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.post("/api/reports/{report_id}/sightings", status_code=201)
 async def create_sighting(
     report_id: int,
+    background_tasks: BackgroundTasks,
     description: str = Form(...),
     location: str = Form(...),
     event_date: str = Form(default=""),
@@ -83,6 +87,10 @@ async def create_sighting(
     except Exception:
         (UPLOAD_DIR / filename).unlink(missing_ok=True)
         raise
+    try:
+        notify_sighting_owner(report_id, sighting_id, round(score, 4), background_tasks)
+    except Exception:
+        logger.exception("Could not queue sighting email for lost report %s", report_id)
     return {"id": sighting_id, "lost_report_id": report_id, "similarity_score": round(score,4), "status": "PENDING"}
 
 @router.get("/api/reports/{report_id}/sightings")

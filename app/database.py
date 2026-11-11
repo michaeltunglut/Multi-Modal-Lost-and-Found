@@ -61,6 +61,18 @@ def init_db() -> None:
           reporter_id INTEGER REFERENCES users(id) ON DELETE SET NULL
         );
         CREATE INDEX IF NOT EXISTS idx_sightings_lost_report ON sightings(lost_report_id,status);
+        CREATE TABLE IF NOT EXISTS email_notifications (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          event_key TEXT NOT NULL UNIQUE,
+          event_type TEXT NOT NULL CHECK(event_type IN ('MATCH','SIGHTING')),
+          recipient TEXT NOT NULL,
+          subject TEXT NOT NULL,
+          body TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'PENDING' CHECK(status IN ('PENDING','SENT','FAILED')),
+          last_error TEXT NOT NULL DEFAULT '',
+          created_at TEXT NOT NULL,
+          sent_at TEXT NOT NULL DEFAULT ''
+        );
         CREATE TABLE IF NOT EXISTS matches (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           lost_report_id INTEGER NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
