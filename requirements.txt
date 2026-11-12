@@ -11,3 +11,5 @@ numpy>=1.26,<3
 # AI / ML models
 sentence-transformers>=6.3,<7
 rembg[cpu]>=2.0.87,<3
+# Evaluation charts (optional)
+matplotlib>=3.9,<4
