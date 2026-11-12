@@ -1,0 +1,21 @@
+item_id,type,title,description,category,colour,brand,location,event_date,image_file
+1,lost,Orange water bottle,orange plastic water bottle with a grey screw cap and carry loop,bottle,orange,,Central Library,2026-11-02,bottle_lost.jpeg
+1,found,Insulated flask,mustard yellow flask with a dark grey base and a loop handle on top,bottle,orange,,Library,2026-11-03,bottle_found.jpeg
+2,lost,Blue water bottle,transparent blue plastic water bottle with a light blue flip cap,bottle,blue,,Canteen,2026-11-02,lost_blue_water_bottle.jpeg
+2,found,Teal bottle,see-through teal bottle with a turquoise cap lying on a table,bottle,blue,,Food Court,2026-11-04,found_blue_water_bottle.jpeg
+3,lost,MSI laptop,silver MSI laptop with black keyboard and an AMD Ryzen sticker,laptop,silver,MSI,Lab Block,2026-11-03,laptop_lost.jpeg
+3,found,Notebook computer,light grey notebook computer with MSI logo and Ryzen and Radeon stickers near the trackpad,laptop,silver,MSI,Lab Block,2026-11-04,laptop_found.jpeg
+4,lost,realme earbuds,white realme wireless earbuds in their charging case,electronics,white,realme,Hostel Gate,2026-11-03,Lost_earbuds.jpeg
+4,found,Earbuds case,small glossy pinkish white case with the realme logo,electronics,white,realme,Library,2026-11-05,found_earbuds.jpeg
+5,lost,Gaming headset,red and black wired gaming headset with braided cable and a peeling headband,electronics,black,,Computer Lab,2026-11-04,lost_headphones.jpeg
+5,found,Over-ear headphones,black over-ear headphones with red cushions and red mesh cable and a torn red headband,electronics,black,,Computer Lab,2026-11-05,found_headphones.jpeg
+6,lost,Purple keyboard,purple wireless keyboard with white keys by Portronics,electronics,purple,Portronics,Computer Lab,2026-11-04,lost_keyboard.jpeg
+6,found,Lilac keyboard,lilac keyboard with cream keys and a phone slot at the top,electronics,purple,Portronics,Seminar Hall,2026-11-06,found_keyboard.jpeg
+7,lost,Black prayer cap,black knitted prayer cap with a checkered pattern,clothing,black,,Prayer Hall,2026-11-05,lost_hat.jpeg
+7,found,Woven skull cap,dark woven skull cap with a textured basket pattern,clothing,black,,Prayer Hall,2026-11-06,found_hat.jpeg
+8,lost,Emirates perfume,Emirates Knowledge 6ml roll-on perfume in a brown box,personal care,brown,Emirates,Hostel Block A,2026-11-05,lost_perfume.jpeg
+8,found,Perfume bottle,small perfume bottle in a gold and brown carton saying Knowledge and free from alcohol,personal care,brown,Emirates,Hostel Block B,2026-11-07,found_perfume.jpeg
+9,lost,White phone charger,white phone charger adapter with a USB-C cable and an orange cable protector,electronics,white,,Classroom 204,2026-11-06,lost_charger.jpeg
+9,found,Wall charger,white two-pin wall charger with a white cable and black spiral wrap near the plug,electronics,white,,Room 204,2026-11-07,found_charger.jpeg
+10,lost,Speed cube,stickerless 3x3 speed cube with yellow and orange faces,toy,multicolour,,Library,2026-11-06,lost_rubics_cube.jpeg
+10,found,Puzzle cube,colourful 3x3 puzzle cube with white green and red faces,toy,multicolour,,Canteen,2026-11-08,found_rubics_cube.jpeg

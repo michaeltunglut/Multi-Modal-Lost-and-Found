@@ -1,0 +1,68 @@
+{
+  "version": "refined",
+  "module": "features",
+  "n_reports": 20,
+  "n_lost": 10,
+  "n_found": 10,
+  "n_true_pairs": 10,
+  "n_false_pairs": 90,
+  "final": {
+    "precision_at_1": 1.0,
+    "recall_at_3": 1.0,
+    "mrr": 1.0,
+    "n_queries": 10
+  },
+  "image_only": {
+    "precision_at_1": 1.0,
+    "recall_at_3": 1.0,
+    "mrr": 1.0,
+    "n_queries": 10
+  },
+  "text_only": {
+    "precision_at_1": 1.0,
+    "recall_at_3": 1.0,
+    "mrr": 1.0,
+    "n_queries": 10
+  },
+  "auc": {
+    "final": 1.0,
+    "image": 0.9977777777777778,
+    "text": 1.0
+  },
+  "mean_true_final": 0.7601,
+  "mean_false_final": 0.07118222222222222,
+  "min_true_final": 0.6571,
+  "max_false_final": 0.4682,
+  "cutoff": 0.6,
+  "true_pairs_above_cutoff": 10,
+  "false_pairs_above_cutoff": 0,
+  "precision_at_cutoff": 1.0,
+  "recall_at_cutoff": 1.0,
+  "seconds_per_photo_features": 3.092799919999743,
+  "seconds_per_lost_query": 0.19228662999958032,
+  "photos_with_clip_vector": 20,
+  "photos_with_object_crop": 19,
+  "settings": {
+    "CLIP_WEIGHT": 0.8,
+    "CLIP_OBJ_SHARE": 0.65,
+    "CLIP_COS_FLOOR": 0.55,
+    "CLIP_COS_CEIL": 0.95,
+    "SEMANTIC_WEIGHT": 0.7,
+    "SBERT_COS_FLOOR": 0.3,
+    "CROSS_COS_FLOOR": 0.18,
+    "CROSS_COS_CEIL": 0.33,
+    "FUSION_WITH_CROSS": {
+      "image": 0.45,
+      "text": 0.3,
+      "cross": 0.17,
+      "category": 0.08
+    },
+    "FUSION_NO_CROSS": {
+      "image": 0.55,
+      "text": 0.37,
+      "category": 0.08
+    },
+    "ADJ_GATE_LOW": 0.4,
+    "ADJ_GATE_HIGH": 0.6
+  }
+}

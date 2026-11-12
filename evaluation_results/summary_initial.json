@@ -1,0 +1,48 @@
+{
+  "version": "initial",
+  "module": "features_initial",
+  "n_reports": 20,
+  "n_lost": 10,
+  "n_found": 10,
+  "n_true_pairs": 10,
+  "n_false_pairs": 90,
+  "final": {
+    "precision_at_1": 1.0,
+    "recall_at_3": 1.0,
+    "mrr": 1.0,
+    "n_queries": 10
+  },
+  "image_only": {
+    "precision_at_1": 0.4,
+    "recall_at_3": 0.7,
+    "mrr": 0.5513888888888889,
+    "n_queries": 10
+  },
+  "text_only": {
+    "precision_at_1": 1.0,
+    "recall_at_3": 1.0,
+    "mrr": 1.0,
+    "n_queries": 10
+  },
+  "auc": {
+    "final": 0.9733333333333334,
+    "image": 0.7,
+    "text": 0.9988888888888889
+  },
+  "mean_true_final": 0.59249,
+  "mean_false_final": 0.36678333333333335,
+  "min_true_final": 0.4547,
+  "max_false_final": 0.5889,
+  "cutoff": 0.6,
+  "true_pairs_above_cutoff": 5,
+  "false_pairs_above_cutoff": 0,
+  "precision_at_cutoff": 1.0,
+  "recall_at_cutoff": 0.5,
+  "seconds_per_photo_features": 0.025388220000240835,
+  "seconds_per_lost_query": 0.0008207200000470039,
+  "photos_with_clip_vector": 0,
+  "photos_with_object_crop": 0,
+  "settings": {
+    "fusion": "0.55*image + 0.37*text + 0.08*category"
+  }
+}
