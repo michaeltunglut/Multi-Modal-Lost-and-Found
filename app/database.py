@@ -55,6 +55,8 @@ def init_db() -> None:
           image_path TEXT NOT NULL UNIQUE,
           image_features TEXT NOT NULL,
           similarity_score REAL NOT NULL,
+          image_score REAL,
+          text_score REAL,
           status TEXT NOT NULL DEFAULT 'PENDING'
             CHECK(status IN ('PENDING','REVIEWED','REJECTED','RESOLVED')),
           created_at TEXT NOT NULL,
@@ -86,6 +88,11 @@ def init_db() -> None:
           CHECK(lost_report_id != found_report_id)
         );
         """)
+        sighting_columns = {row["name"] for row in c.execute("PRAGMA table_info(sightings)")}
+        if "image_score" not in sighting_columns:
+            c.execute("ALTER TABLE sightings ADD COLUMN image_score REAL")
+        if "text_score" not in sighting_columns:
+            c.execute("ALTER TABLE sightings ADD COLUMN text_score REAL")
         columns = {row["name"] for row in c.execute("PRAGMA table_info(reports)")}
         if "reporter_id" not in columns:
             c.execute("ALTER TABLE reports ADD COLUMN reporter_id INTEGER REFERENCES users(id) ON DELETE SET NULL")

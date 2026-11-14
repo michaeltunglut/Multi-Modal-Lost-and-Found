@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-12T17:18:59",
+  "python": "3.14.0",
+  "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+  "packages": {
+    "numpy": "2.5.4",
+    "Pillow": "11.3.0",
+    "torch": "2.15.0",
+    "sentence-transformers": "5.7.0",
+    "rembg": "2.0.69",
+    "onnxruntime": "not installed",
+    "fastapi": "0.162.2"
+  },
+  "csv": "eval_data/items.csv",
+  "images": "eval_data/images",
+  "reports": 20,
+  "cutoff": 0.6
+}

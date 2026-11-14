@@ -61,28 +61,28 @@ async def create_sighting(
     if score < MATCH_MIN_SCORE:
         raise HTTPException(
             status_code=422,
-            detail=f"This sighting scored {score:.0%}, below the 60% minimum. Add a clearer photo and describe the item’s identifying details.",
+            detail=f"This sighting scored {score:.0%} overall (image {image_score:.0%}; description {text_score:.0%}), below the 60% minimum. Add a clearer photo and describe the item’s identifying details.",
         )
 
     features_json = json.dumps(features)
     cutoff = (datetime.now(timezone.utc) - timedelta(minutes=30)).isoformat(timespec="seconds")
     reporter_id = user["id"] if user else None
     with db() as c:
-        duplicate = c.execute("""SELECT id,similarity_score,status FROM sightings
+        duplicate = c.execute("""SELECT id,similarity_score,image_score,text_score,status FROM sightings
                                 WHERE lost_report_id=? AND description=? AND location=? AND event_date=?
                                   AND contact_method=? AND image_features=? AND created_at>=? AND reporter_id IS ?
                                 ORDER BY created_at DESC LIMIT 1""",
                              (report_id,description,location,event_date,contact_method,features_json,cutoff,reporter_id)).fetchone()
     if duplicate:
-        return {"id":duplicate["id"],"lost_report_id":report_id,"similarity_score":duplicate["similarity_score"],"status":duplicate["status"],"duplicate":True}
+        return {"id":duplicate["id"],"lost_report_id":report_id,"similarity_score":duplicate["similarity_score"],"image_score":duplicate["image_score"],"text_score":duplicate["text_score"],"status":duplicate["status"],"duplicate":True}
 
     ext = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp"}[image.content_type]
     filename = uuid.uuid4().hex + ext
     processed.save(UPLOAD_DIR / filename, format={".jpg": "JPEG", ".png": "PNG", ".webp": "WEBP"}[ext], quality=90)
     try:
         with db() as c:
-            cur = c.execute("""INSERT INTO sightings(lost_report_id,description,location,event_date,contact_method,image_path,image_features,similarity_score,created_at,reporter_id)
-                               VALUES(?,?,?,?,?,?,?,?,?,?)""", (report_id,description,location,event_date,contact_method,filename,features_json,round(score,4),now(),reporter_id))
+            cur = c.execute("""INSERT INTO sightings(lost_report_id,description,location,event_date,contact_method,image_path,image_features,similarity_score,image_score,text_score,created_at,reporter_id)
+                               VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""", (report_id,description,location,event_date,contact_method,filename,features_json,round(score,4),round(image_score,4),round(text_score,4),now(),reporter_id))
             sighting_id = cur.lastrowid
     except Exception:
         (UPLOAD_DIR / filename).unlink(missing_ok=True)
@@ -91,7 +91,7 @@ async def create_sighting(
         notify_sighting_owner(report_id, sighting_id, round(score, 4), background_tasks)
     except Exception:
         logger.exception("Could not queue sighting email for lost report %s", report_id)
-    return {"id": sighting_id, "lost_report_id": report_id, "similarity_score": round(score,4), "status": "PENDING"}
+    return {"id": sighting_id, "lost_report_id": report_id, "similarity_score": round(score,4), "image_score": round(image_score,4), "text_score": round(text_score,4), "status": "PENDING"}
 
 @router.get("/api/reports/{report_id}/sightings")
 def list_sightings(report_id: int, user=Depends(signed_in_user)):
@@ -100,7 +100,7 @@ def list_sightings(report_id: int, user=Depends(signed_in_user)):
         if not lost or (user["role"] != "ADMIN" and lost["reporter_id"] != user["id"]):
             raise HTTPException(status_code=404, detail="Lost report not found.")
         rows = c.execute("SELECT * FROM sightings WHERE lost_report_id=? ORDER BY created_at DESC", (report_id,)).fetchall()
-    return [{"id":r["id"],"description":r["description"],"location":r["location"],"event_date":r["event_date"],"contact_method":r["contact_method"],"image_url":f"/uploads/{r['image_path']}","similarity_score":r["similarity_score"],"status":r["status"],"created_at":r["created_at"]} for r in rows]
+    return [{"id":r["id"],"description":r["description"],"location":r["location"],"event_date":r["event_date"],"contact_method":r["contact_method"],"image_url":f"/uploads/{r['image_path']}","similarity_score":r["similarity_score"],"image_score":r["image_score"],"text_score":r["text_score"],"status":r["status"],"created_at":r["created_at"]} for r in rows]
 
 class SightingUpdate(BaseModel):
     status: str
